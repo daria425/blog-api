@@ -1,2 +1,7 @@
-const express = require("express");
-const router = express.Router();
+const index_get = (req, res, next) => {
+  res.send("Hello Welcome");
+};
+
+module.exports = {
+  index_get,
+};
