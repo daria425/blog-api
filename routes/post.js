@@ -112,12 +112,13 @@ const new_post = [
 function verifyToken(req, res, next) {
   console.log("request recieved");
   const bearerHeader = req.headers["authorization"];
+  const key = req.headers["x-api-key"];
 
   if (typeof bearerHeader !== "undefined") {
     const bearer = bearerHeader.split(" ");
     const token = bearer[1];
 
-    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, key, (err, decoded) => {
       if (err) {
         console.log(err);
         res.sendStatus(403);
