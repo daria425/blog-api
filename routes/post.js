@@ -1,5 +1,10 @@
 const Post = require("../models/postSchema");
 const jwt = require("jsonwebtoken");
+const multer = require("multer");
+var fs = require("fs");
+var path = require("path");
+const upload = multer({ dest: "../uploads" });
+
 const get_posts = async (req, res, next) => {
   try {
     const allPosts = await Post.find().exec();
@@ -9,14 +14,90 @@ const get_posts = async (req, res, next) => {
   }
 };
 
-const new_post = [
+const get_post_details = async (req, res, next) => {
+  try {
+    const post = await Post.findById(req.params.id)
+      .populate("author", "username id")
+      .exec();
+    res.send(post);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+const update_post = [
+  verifyToken,
+  upload.any("images"),
+  async (req, res, next) => {
+    try {
+      const imageSources = [];
+
+      if (typeof req.files !== "undefined") {
+        req.files.forEach((file) => {
+          imageSources.push({
+            data: fs.readFileSync(path.join("../uploads/" + file.filename)),
+            contentType: "image/jpg",
+          });
+        });
+      }
+      const updatedPost = new Post({
+        _id: req.params.id,
+        title: req.body.title,
+        content: {
+          subheadings: req.body.content?.subheadings || [],
+          snippets: req.body.content?.snippets || [],
+          main_text: req.body.content.main_text,
+        },
+        image_sources: imageSources.length <= 0 ? [] : imageSources,
+        author: req.user.user._id,
+        is_published: req.body.is_published,
+      });
+      await Post.findByIdAndUpdate(req.params.id, updatedPost, {}).exec();
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.send(`Error: ${err.message}`);
+    }
+  },
+];
+
+const delete_post = [
   verifyToken,
   async (req, res, next) => {
     try {
+      await Post.findByIdAndDelete(req.params.id);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.send(`Error: ${err.message}`);
+    }
+  },
+];
+const new_post = [
+  verifyToken,
+  upload.any("images"),
+  async (req, res, next) => {
+    try {
+      const imageSources = [];
+
+      if (typeof req.files !== "undefined") {
+        req.files.forEach((file) => {
+          imageSources.push({
+            data: fs.readFileSync(path.join("../uploads/" + file.filename)),
+            contentType: "image/jpg",
+          });
+        });
+      }
+
       console.log(req);
       const newPost = new Post({
         title: req.body.title,
-        content: req.body.content,
+        content: {
+          subheadings: req.body.content?.subheadings || [],
+          snippets: req.body.content?.snippets || [],
+          main_text: req.body.content.main_text,
+        },
+        image_sources: imageSources.length <= 0 ? [] : imageSources,
         author: req.user.user._id,
         is_published: req.body.is_published,
       });
@@ -54,7 +135,13 @@ function verifyToken(req, res, next) {
   }
 }
 
-module.exports = { get_posts, new_post };
+module.exports = {
+  get_posts,
+  new_post,
+  get_post_details,
+  update_post,
+  delete_post,
+};
 
 //router.post("/posts", verifyToken, (req, res, next) => {
 // jwt.verify(req.token, "svintus", (err, authData) => {

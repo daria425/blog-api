@@ -7,8 +7,22 @@ const postSchema = new Schema(
       required: true,
     },
     content: {
-      type: String,
-      required: true,
+      subheadings: [
+        {
+          type: String,
+          required: true,
+        },
+      ],
+      snippets: [
+        {
+          type: String,
+          required: true,
+        },
+      ],
+      main_text: {
+        type: String,
+        required: true,
+      },
     },
     author: {
       type: Schema.Types.ObjectId,
@@ -21,12 +35,25 @@ const postSchema = new Schema(
         ref: "Comment",
       },
     ],
+    image_sources: [
+      {
+        data: {
+          type: Buffer,
+          default: [],
+        },
+        contentType: {
+          type: String,
+          default: "",
+        },
+      },
+    ],
     is_published: {
       type: Boolean,
       required: true,
       default: false,
     },
   },
+
   { timestamps: true }
 );
 
