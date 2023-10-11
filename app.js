@@ -1,12 +1,19 @@
 require("dotenv").config();
 const cors = require("cors");
+const helmet = require("helmet");
+const RateLimit = require("express-rate-limit");
 const createError = require("http-errors");
 const express = require("express");
+const compression = require("compression");
 const passport = require("passport");
 const session = require("express-session");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const limiter = RateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 20,
+});
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const controller = require("./controllers/controller");
@@ -28,7 +35,10 @@ app.set("view engine", "jade");
 
 app.use(cors());
 app.use(logger("dev"));
+app.use(limiter);
 app.use(express.json());
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+app.use(compression());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
