@@ -52,6 +52,12 @@ const postSchema = new Schema(
       required: true,
       default: false,
     },
+    category: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "Category",
+    },
+    tags: [{ type: String, required: true }],
   },
 
   { timestamps: true }

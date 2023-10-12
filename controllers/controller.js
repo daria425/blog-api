@@ -5,7 +5,7 @@ const postRoutes = require("../routes/post");
 const accessRoutes = require("../routes/access");
 const signUpRoutes = require("../routes/signup");
 const loginRoutes = require("../routes/login");
-
+const categoryRoutes = require("../routes/category");
 router.get("/", indexRoutes.index_get);
 router.get("/access", accessRoutes.get_access);
 
@@ -16,6 +16,8 @@ router.get("/api/posts/:id", postRoutes.get_post_details);
 router.post("/api/posts/new", postRoutes.new_post);
 router.post("/api/posts/:id/update", postRoutes.update_post);
 router.post("/api/posts/:id/delete", postRoutes.delete_post);
+
+router.post("/api/category/new", categoryRoutes.new_category_post);
 router.post("/api/signup", signUpRoutes.signup_post);
 
 router.post("/api/login", loginRoutes.login_post);

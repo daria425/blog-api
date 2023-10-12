@@ -1,6 +1,7 @@
 const Post = require("../models/postSchema");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
+const Category = require("../models/categorySchema");
 var fs = require("fs");
 var path = require("path");
 const upload = multer({ dest: "../uploads" });
@@ -50,6 +51,8 @@ const update_post = [
         },
         image_sources: imageSources.length <= 0 ? [] : imageSources,
         author: req.user.user._id,
+        category: req.body.category,
+        tags: req.body.tags,
         is_published: req.body.is_published,
       });
       await Post.findByIdAndUpdate(req.params.id, updatedPost, {}).exec();
@@ -98,10 +101,17 @@ const new_post = [
           main_text: req.body.content.main_text,
         },
         image_sources: imageSources.length <= 0 ? [] : imageSources,
+        category: req.body.category,
+        tags: req.body.tags,
         author: req.user.user._id,
         is_published: req.body.is_published,
       });
-      await newPost.save();
+      const savedPost = await newPost.save();
+      await Category.updateOne(
+        { _id: req.body.category },
+        { $push: { posts: savedPost._id } }
+      );
+
       res.sendStatus(200);
     } catch (errors) {
       console.log(errors);
@@ -142,6 +152,7 @@ module.exports = {
   get_post_details,
   update_post,
   delete_post,
+  verifyToken,
 };
 
 //router.post("/posts", verifyToken, (req, res, next) => {
