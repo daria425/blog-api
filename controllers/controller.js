@@ -14,6 +14,7 @@ router.get("/api/posts", postRoutes.get_posts);
 router.get("/api/posts/:id", postRoutes.get_post_details);
 
 router.post("/api/posts/new", postRoutes.new_post);
+router.post("/api/posts/delete", postRoutes.delete_post);
 router.post("/api/posts/:id/update", postRoutes.update_post);
 router.post("/api/posts/:id/delete", postRoutes.delete_post);
 

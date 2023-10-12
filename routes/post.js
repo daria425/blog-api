@@ -68,7 +68,18 @@ const delete_post = [
   verifyToken,
   async (req, res, next) => {
     try {
-      await Post.findByIdAndDelete(req.params.id);
+      //const query={posts: req.body.postid}
+      //const update=
+      const [post, categoryResult] = await Promise.all([
+        Post.findByIdAndDelete(req.body.postid),
+        Category.updateMany(
+          { posts: req.body.postid },
+          {
+            $pull: { posts: req.body.postid },
+          }
+        ),
+      ]);
+      console.log(categoryResult);
       res.sendStatus(200);
     } catch (err) {
       console.log(err);
