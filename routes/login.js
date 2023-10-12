@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 
-const login_post = async (req, res, next) => {
+const login_api_post = async (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return next(err);
@@ -26,5 +26,5 @@ const login_post = async (req, res, next) => {
 };
 
 module.exports = {
-  login_post,
+  login_api_post,
 };
