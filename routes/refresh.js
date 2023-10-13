@@ -23,3 +23,5 @@ const refresh_post = (req, res, next) => {
     return res.status(406).json({ message: "Unauthorized" });
   }
 };
+
+module.exports = { refresh_post };
