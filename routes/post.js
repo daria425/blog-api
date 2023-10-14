@@ -107,7 +107,7 @@ const new_post = [
         });
       }
 
-      console.log(req);
+      console.log(req.body);
       const newPost = new Post({
         title: req.body.title,
         content: {
