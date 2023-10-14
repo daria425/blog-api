@@ -10,7 +10,7 @@ const get_posts = async (req, res, next) => {
   try {
     const allPosts = await Post.find()
       .populate("category")
-      .populate("comment")
+      .populate("comments")
       .exec();
     res.send(allPosts);
   } catch (err) {
@@ -22,6 +22,7 @@ const get_post_details = async (req, res, next) => {
   try {
     const post = await Post.findById(req.params.id)
       .populate("author", "username id")
+      .populate("comments")
       .exec();
     res.send(post);
   } catch (err) {

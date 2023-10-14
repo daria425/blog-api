@@ -6,7 +6,7 @@ const new_comment_post = async (req, res, next) => {
   try {
     const comment = new Comment({
       text: req.body.text,
-      user: req.user._id || undefined,
+      user: req.user?._id,
     });
     const savedComment = await comment.save();
     await Post.updateOne(
@@ -19,6 +19,7 @@ const new_comment_post = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     res.send(`Error: ${err}`);
+    res.status(500);
   }
 };
 
