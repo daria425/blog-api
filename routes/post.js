@@ -8,7 +8,10 @@ const upload = multer({ dest: "../uploads" });
 
 const get_posts = async (req, res, next) => {
   try {
-    const allPosts = await Post.find().exec();
+    const allPosts = await Post.find()
+      .populate("category")
+      .populate("comment")
+      .exec();
     res.send(allPosts);
   } catch (err) {
     console.log(err);

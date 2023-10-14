@@ -15,6 +15,7 @@ const new_comment_post = async (req, res, next) => {
       },
       { $push: { comments: savedComment._id } }
     );
+    res.sendStatus(200);
   } catch (err) {
     console.log(err);
     res.send(`Error: ${err}`);
