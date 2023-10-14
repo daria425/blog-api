@@ -31,7 +31,7 @@ const login_api_post = async (req, res, next) => {
     });
     res.cookie("jwt", refreshToken, {
       httpOnly: true,
-      sameSite: "None",
+      SameSite: "None",
       secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
