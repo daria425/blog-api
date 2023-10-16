@@ -21,6 +21,7 @@ router.post("/api/posts/:id/update", postRoutes.update_post);
 // router.post("/api/posts/:id/delete", postRoutes.delete_post);
 
 router.post("/api/category/new", categoryRoutes.new_category_post);
+router.get("/api/category", categoryRoutes.get_all_categories);
 router.get("/api/refresh", refreshRoutes.refresh_post);
 router.get("/api/category/:id", categoryRoutes.category_details_get);
 router.post("/api/category/delete", categoryRoutes.category_delete);

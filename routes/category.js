@@ -1,6 +1,17 @@
 const Category = require("../models/categorySchema");
 const Post = require("../models/postSchema");
 const postRoutes = require("../routes/post");
+
+const get_all_categories = async (req, res, next) => {
+  try {
+    const categories = await Category.find().populate("posts").exec();
+    res.send(categories);
+  } catch (err) {
+    console.log(err);
+    res.send(`Error: ${err}`);
+    res.status(500);
+  }
+};
 const new_category_post = [
   postRoutes.verifyToken,
   async (req, res, next) => {
@@ -49,4 +60,5 @@ module.exports = {
   new_category_post,
   category_details_get,
   category_delete,
+  get_all_categories,
 };

@@ -5,7 +5,7 @@ const Category = require("../models/categorySchema");
 var fs = require("fs");
 var path = require("path");
 const upload = multer({ dest: "../uploads" });
-
+const refreshRoute = require("../routes/refresh");
 const get_posts = async (req, res, next) => {
   try {
     const allPosts = await Post.find()
@@ -60,10 +60,11 @@ const update_post = [
         is_published: req.body.is_published,
       });
       await Post.findByIdAndUpdate(req.params.id, updatedPost, {}).exec();
+      console.log("post updated");
       res.sendStatus(200);
     } catch (err) {
       console.log(err);
-      res.send(`Error: ${err.message}`);
+      res.send(`Update Error: ${err.message}`);
     }
   },
 ];
@@ -135,6 +136,7 @@ const new_post = [
 ];
 
 function verifyToken(req, res, next) {
+  const refreshToken = req.cookies.jwt;
   console.log("request recieved");
   const bearerHeader = req.headers["authorization"];
   const key = req.headers["x-api-key"];
@@ -143,10 +145,26 @@ function verifyToken(req, res, next) {
     const bearer = bearerHeader.split(" ");
     const token = bearer[1];
 
-    jwt.verify(token, key, (err, decoded) => {
+    jwt.verify(token, key, async (err, decoded) => {
       if (err) {
-        console.log(err);
-        res.sendStatus(403);
+        console.log("Access token verification failed:", err);
+        // res.sendStatus(403);
+        // Redirect to '/refresh' for token refreshing
+        try {
+          const { accessToken, user } = await refreshRoute.refresh_post(
+            req,
+            res,
+            next
+          );
+          console.log(accessToken, user);
+          req.token = accessToken;
+          req.user = user;
+          next();
+        } catch (refreshErr) {
+          console.log("Token refresh failed:", refreshErr);
+          res.sendStatus(403); // Forbidden
+        }
+
         // Forbidden
       } else {
         // console.log(decoded);
@@ -161,6 +179,22 @@ function verifyToken(req, res, next) {
   }
 }
 
+async function refreshAccessToken(refreshToken) {
+  return new Promise((resolve, reject) => {
+    jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, decoded) => {
+      if (err) {
+        console.log("Refresh token verification failed:", err);
+        reject(err);
+      } else {
+        const user = decoded.user || decoded; // Assuming user is stored in decoded
+        const accessToken = jwt.sign({ user }, process.env.SECRET_KEY, {
+          expiresIn: "10m",
+        });
+        resolve(accessToken);
+      }
+    });
+  });
+}
 module.exports = {
   get_posts,
   new_post,

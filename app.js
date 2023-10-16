@@ -14,6 +14,10 @@ const limiter = RateLimit({
   windowMs: 1 * 60 * 1000, // 1 minute
   max: 20,
 });
+const corsOptions = {
+  credentials: true,
+  origin: ["http://localhost:5173"],
+};
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
 const controller = require("./controllers/controller");
@@ -33,7 +37,8 @@ dbConnection();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "jade");
 
-app.use(cors());
+app.use(express.static(path.join(__dirname, "public")));
+app.use(cors(corsOptions));
 app.use(logger("dev"));
 app.use(limiter);
 app.use(express.json());
@@ -41,7 +46,6 @@ app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(compression());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
 app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
