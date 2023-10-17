@@ -2,9 +2,10 @@ const Post = require("../models/postSchema");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const Category = require("../models/categorySchema");
-var fs = require("fs");
-var path = require("path");
+const fs = require("fs");
+const path = require("path");
 const upload = multer({ dest: "../uploads" });
+
 const refreshRoute = require("../routes/refresh");
 const get_posts = async (req, res, next) => {
   try {
@@ -32,11 +33,14 @@ const get_post_details = async (req, res, next) => {
 
 const update_post = [
   verifyToken,
-  upload.any("images"),
+  upload.any(),
   async (req, res, next) => {
     try {
       const imageSources = [];
+      const tags = JSON.parse(req.body.tags);
 
+      const contentObj = JSON.parse(req.body.content);
+      console.log(tags, req.body.tags);
       if (typeof req.files !== "undefined") {
         req.files.forEach((file) => {
           imageSources.push({
@@ -48,15 +52,11 @@ const update_post = [
       const updatedPost = new Post({
         _id: req.params.id,
         title: req.body.title,
-        content: {
-          subheadings: req.body.content?.subheadings || [],
-          snippets: req.body.content?.snippets || [],
-          main_text: req.body.content.main_text,
-        },
+        content: contentObj,
         image_sources: imageSources.length <= 0 ? [] : imageSources,
         author: req.user.user._id,
         category: req.body.category,
-        tags: req.body.tags,
+        tags: tags,
         is_published: req.body.is_published,
       });
       await Post.findByIdAndUpdate(req.params.id, updatedPost, {}).exec();
@@ -98,7 +98,7 @@ const new_post = [
   async (req, res, next) => {
     try {
       const imageSources = [];
-
+      console.log(req.files);
       if (typeof req.files !== "undefined") {
         req.files.forEach((file) => {
           imageSources.push({
@@ -136,7 +136,6 @@ const new_post = [
 ];
 
 function verifyToken(req, res, next) {
-  const refreshToken = req.cookies.jwt;
   console.log("request recieved");
   const bearerHeader = req.headers["authorization"];
   const key = req.headers["x-api-key"];
@@ -156,7 +155,6 @@ function verifyToken(req, res, next) {
             res,
             next
           );
-          console.log(accessToken, user);
           req.token = accessToken;
           req.user = user;
           next();
@@ -174,7 +172,6 @@ function verifyToken(req, res, next) {
       }
     });
   } else {
-    console.log(req.headers);
     res.sendStatus(403); // Forbidden
   }
 }

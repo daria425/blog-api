@@ -8,9 +8,11 @@ const loginRoutes = require("../routes/login");
 const categoryRoutes = require("../routes/category");
 const commentRoutes = require("../routes/comment");
 const refreshRoutes = require("../routes/refresh");
+const noVerifyRoutes = require("../routes/noverify");
 router.get("/", indexRoutes.index_get);
 router.get("/access", accessRoutes.get_access);
 
+router.post("/api/posts/noverify/new", noVerifyRoutes.new_post_no_verify);
 //post routes
 router.get("/api/posts", postRoutes.get_posts);
 router.get("/api/posts/:id", postRoutes.get_post_details);

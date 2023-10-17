@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const refresh_post = (req, res, next) => {
   console.log("token refreshing");
+  console.log(req.cookies.jwt);
   if (req.cookies?.jwt) {
     // Destructuring refreshToken from cookie
     const refreshToken = req.cookies.jwt;
