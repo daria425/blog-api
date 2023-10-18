@@ -54,7 +54,7 @@ const update_post = [
         _id: req.params.id,
         title: req.body.title,
         content: contentObj,
-        image_sources: imageSources,
+        image_sources: prevItem.image_sources.concat(imageSources), //add uploaded images to images that r already there
         author: req.user.user._id,
         category: req.body.category,
         tags: tags,
