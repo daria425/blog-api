@@ -36,24 +36,25 @@ const update_post = [
   upload.any(),
   async (req, res, next) => {
     try {
-      const imageSources = [];
+      const prevItem = await Post.findById(req.params.id);
       const tags = JSON.parse(req.body.tags);
 
       const contentObj = JSON.parse(req.body.content);
       console.log(tags, req.body.tags);
-      if (typeof req.files !== "undefined") {
-        req.files.forEach((file) => {
-          imageSources.push({
-            data: fs.readFileSync(path.join("../uploads/" + file.filename)),
-            contentType: "image/jpg",
-          });
-        });
-      }
+      console.log(req.files);
+      const imageSources =
+        req.files.length > 0
+          ? req.files.map((file) => ({
+              data: fs.readFileSync(path.join("../uploads/" + file.filename)),
+              contentType: "image/jpg",
+            }))
+          : prevItem.image_sources;
+      console.log(imageSources);
       const updatedPost = new Post({
         _id: req.params.id,
         title: req.body.title,
         content: contentObj,
-        image_sources: imageSources.length <= 0 ? [] : imageSources,
+        image_sources: imageSources,
         author: req.user.user._id,
         category: req.body.category,
         tags: tags,
