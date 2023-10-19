@@ -130,8 +130,27 @@ const new_post = [
       );
 
       res.sendStatus(200);
-    } catch (errors) {
-      console.log(errors);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(`Error: ${err.message}`);
+    }
+  },
+];
+
+const delete_image_from_post = [
+  verifyToken,
+  async (req, res, next) => {
+    try {
+      console.log(req.body.image_to_delete);
+      const selectedImage = await Post.updateOne(
+        { _id: req.params.id },
+        { $pull: { image_sources: { _id: req.body.image_to_delete } } }
+      );
+      console.log(selectedImage);
+      res.sendStatus(200);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(`Error: ${err.message}`);
     }
   },
 ];
@@ -177,23 +196,24 @@ function verifyToken(req, res, next) {
   }
 }
 
-async function refreshAccessToken(refreshToken) {
-  return new Promise((resolve, reject) => {
-    jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, decoded) => {
-      if (err) {
-        console.log("Refresh token verification failed:", err);
-        reject(err);
-      } else {
-        const user = decoded.user || decoded; // Assuming user is stored in decoded
-        const accessToken = jwt.sign({ user }, process.env.SECRET_KEY, {
-          expiresIn: "10m",
-        });
-        resolve(accessToken);
-      }
-    });
-  });
-}
+// async function refreshAccessToken(refreshToken) {
+//   return new Promise((resolve, reject) => {
+//     jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, decoded) => {
+//       if (err) {
+//         console.log("Refresh token verification failed:", err);
+//         reject(err);
+//       } else {
+//         const user = decoded.user || decoded; // Assuming user is stored in decoded
+//         const accessToken = jwt.sign({ user }, process.env.SECRET_KEY, {
+//           expiresIn: "10m",
+//         });
+//         resolve(accessToken);
+//       }
+//     });
+//   });
+// }
 module.exports = {
+  delete_image_from_post,
   get_posts,
   new_post,
   get_post_details,
