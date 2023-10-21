@@ -110,16 +110,15 @@ const new_post = [
       }
 
       console.log(req.body);
+      const tags = JSON.parse(req.body.tags);
+
+      const contentObj = JSON.parse(req.body.content);
       const newPost = new Post({
         title: req.body.title,
-        content: {
-          subheadings: req.body.content?.subheadings || [],
-          snippets: req.body.content?.snippets || [],
-          main_text: req.body.content.main_text,
-        },
+        content: contentObj,
         image_sources: imageSources.length <= 0 ? [] : imageSources,
         category: req.body.category,
-        tags: req.body.tags,
+        tags: tags,
         author: req.user.user._id,
         is_published: req.body.is_published,
       });
@@ -129,7 +128,7 @@ const new_post = [
         { $push: { posts: savedPost._id } }
       );
 
-      res.sendStatus(200);
+      res.status(200).send(savedPost);
     } catch (err) {
       console.log(err);
       res.status(500).send(`Error: ${err.message}`);
