@@ -27,6 +27,7 @@ const get_post_details = async (req, res, next) => {
       .exec();
     res.send(post);
   } catch (err) {
+    res.status(500).send(err);
     console.log(err);
   }
 };
@@ -111,10 +112,9 @@ const new_post = [
 
       console.log(req.body);
       const tags = JSON.parse(req.body.tags);
-
       const contentObj = JSON.parse(req.body.content);
       const newPost = new Post({
-        title: req.body.title,
+        title: req.body.title || "",
         content: contentObj,
         image_sources: imageSources.length <= 0 ? [] : imageSources,
         category: req.body.category,
