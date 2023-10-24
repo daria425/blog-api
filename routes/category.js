@@ -16,12 +16,14 @@ const new_category_post = [
   postRoutes.verifyToken,
   async (req, res, next) => {
     try {
+      console.log(req.body);
+      const categoryPosts = JSON.parse(req.body.posts);
       const newCategory = new Category({
         name: req.body.name,
-        posts: req.body?.posts,
+        posts: categoryPosts,
       });
       await newCategory.save();
-      res.sendStatus(200);
+      res.send(newCategory);
     } catch (err) {
       console.log(err);
       res.send(err);
