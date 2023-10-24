@@ -1,5 +1,7 @@
 const log_out_get = (req, res, next) => {
-  res.clearCookie("user", { path: "/" }); // clear the session cookie
+  res.clearCookie("user", { path: "/" });
+  res.clearCookie("connect.sid", { path: "/" });
+  res.clearCookie("jwt", { path: "/" }); // clear the session cookie
   req.logout(function (err) {
     // logout of passport
     req.session.destroy(function (err) {
