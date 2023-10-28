@@ -35,14 +35,13 @@ const login_api_post = async (req, res, next) => {
       secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
-    res.cookie("user", user, {
-      httpOnly: true,
+    res.cookie("user", user.username, {
+      httpOnly: false,
       SameSite: "None",
-      secure: true,
       maxAge: 24 * 60 * 60 * 1000,
     });
     // Send both tokens in the response
-    res.send({ accessToken, refreshToken, user });
+    res.send({ accessToken, refreshToken });
   })(req, res, next);
 };
 

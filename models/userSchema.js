@@ -5,6 +5,12 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  first_name: {
+    type: String,
+  },
+  last_name: {
+    type: String,
+  },
   password: {
     type: String,
     required: true,
@@ -26,4 +32,7 @@ const userSchema = new Schema({
   },
 });
 
+userSchema.virtual("full_name").get(function () {
+  return `${this.first_name} ${this.last_name}`;
+});
 module.exports = mongoose.model("User", userSchema);

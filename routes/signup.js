@@ -45,6 +45,8 @@ const signup_post = async (req, res, next) => {
     console.log(req.body);
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     const user = new User({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
       username: req.body.username,
       password: hashedPassword,
       email: req.body.email,
