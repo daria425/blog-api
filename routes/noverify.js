@@ -24,8 +24,8 @@ const new_post_no_verify = [
       const newPost = new Post({
         title: req.body.title,
         content: {
-          subheadings: req.body.content?.subheadings || [],
-          snippets: req.body.content?.snippets || [],
+          subheadings: req.body.content?.subheadings || undefined,
+          snippets: req.body.content?.snippets || undefined,
           main_text: req.body.content.main_text,
         },
         image_sources: imageSources.length <= 0 ? [] : imageSources,

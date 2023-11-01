@@ -7,21 +7,21 @@ const postSchema = new Schema(
       required: true,
     },
     content: {
-      subheadings: [
-        {
-          type: String,
-          required: true,
-        },
-      ],
+      subheading: {
+        type: String,
+        default: "",
+      },
+
       snippets: [
         {
           type: String,
-          required: true,
+          default: "",
         },
       ],
+
       main_text: {
         type: String,
-        required: true,
+        default: "",
       },
     },
     author: {
