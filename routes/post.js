@@ -42,7 +42,7 @@ const update_post = [
 
       const contentObj = JSON.parse(req.body.content);
       console.log(tags, req.body.tags);
-      console.log(req.files);
+      console.log(req.body);
       const imageSources =
         req.files.length > 0
           ? req.files.map((file) => ({
@@ -50,7 +50,6 @@ const update_post = [
               contentType: "image/jpg",
             }))
           : prevItem.image_sources;
-      console.log(imageSources);
       const updatedPost = new Post({
         _id: req.params.id,
         title: req.body.title,
