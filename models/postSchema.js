@@ -37,13 +37,9 @@ const postSchema = new Schema(
     ],
     image_sources: [
       {
-        data: {
-          type: Buffer,
-          default: [],
-        },
-        contentType: {
+        publicId: { type: String },
+        url: {
           type: String,
-          default: "",
         },
       },
     ],

@@ -4,7 +4,12 @@ const multer = require("multer");
 const Category = require("../models/categorySchema");
 const fs = require("fs");
 const path = require("path");
-const upload = multer({ dest: "../uploads" });
+const storage = multer.diskStorage({});
+const upload = multer({ storage: storage });
+const {
+  uploadToClodinary,
+  removeFromCloudinary,
+} = require("../services/cloudinary");
 
 const refreshRoute = require("../routes/refresh");
 const get_posts = async (req, res, next) => {
@@ -41,15 +46,23 @@ const update_post = [
       const tags = JSON.parse(req.body.tags);
 
       const contentObj = JSON.parse(req.body.content);
-      console.log(tags, req.body.tags);
       console.log(req.body);
+      const uploads = [];
+      for (const file of req.files) {
+        const path = file.path;
+        const imageData = await uploadToClodinary(path, "post-images");
+        uploads.push({ publicId: imageData.publicId, url: imageData.url });
+      }
       const imageSources =
-        req.files.length > 0
-          ? req.files.map((file) => ({
-              data: fs.readFileSync(path.join("../uploads/" + file.filename)),
-              contentType: "image/jpg",
-            }))
-          : prevItem.image_sources;
+        uploads.length > 0 ? [...uploads] : prevItem.image_sources;
+      // const imageSources =
+      //   req.files.length > 0
+      //     ? req.files.map((file) => ({
+      //         data: fs.readFileSync(path.join("../uploads/" + file.filename)),
+      //         contentType: "image/jpg",
+      //       }))
+      //     : prevItem.image_sources;
+      //)
       const updatedPost = new Post({
         _id: req.params.id,
         title: req.body.title,
@@ -101,12 +114,14 @@ const new_post = [
       const imageSources = [];
       console.log(req.files);
       if (typeof req.files !== "undefined") {
-        req.files.forEach((file) => {
+        for (const file of req.files) {
+          const path = file.path;
+          const imageData = await uploadToClodinary(path, "post-images");
           imageSources.push({
-            data: fs.readFileSync(path.join("../uploads/" + file.filename)),
-            contentType: "image/jpg",
+            publicId: imageData.publicId,
+            url: imageData.url,
           });
-        });
+        }
       }
 
       console.log(req.body);
@@ -115,7 +130,7 @@ const new_post = [
       const newPost = new Post({
         title: req.body.title || "",
         content: contentObj,
-        image_sources: imageSources.length <= 0 ? [] : imageSources,
+        image_sources: imageSources,
         category: req.body.category,
         tags: tags,
         author: req.user.user._id,
