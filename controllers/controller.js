@@ -22,7 +22,7 @@ router.post("/api/posts/new", postRoutes.new_post);
 router.post("/api/posts/delete", postRoutes.delete_post);
 router.post("/api/posts/:id/update", postRoutes.update_post);
 router.post("/api/posts/:id/imagedelete", postRoutes.delete_image_from_post);
-
+router.post("/api/posts/:id/update-content", postRoutes.update_post_text);
 // router.post("/api/posts/:id/delete", postRoutes.delete_post);
 
 router.post("/api/category/new", categoryRoutes.new_category_post);

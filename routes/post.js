@@ -164,6 +164,20 @@ const delete_image_from_post = [
   },
 ];
 
+const update_post_text = [
+  verifyToken,
+  async (req, res, next) => {
+    try {
+      const postToUpdate = await Post.findOne({ _id: req.params.id });
+      postToUpdate.content.main_text = req.body.main_text;
+      const updatedPost = await postToUpdate.save();
+      res.status(200).send(updatedPost);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send(`Error: ${err.message}`);
+    }
+  },
+];
 function verifyToken(req, res, next) {
   console.log("request recieved");
   const bearerHeader = req.headers["authorization"];
@@ -229,6 +243,7 @@ module.exports = {
   update_post,
   delete_post,
   verifyToken,
+  update_post_text,
 };
 
 //router.post("/posts", verifyToken, (req, res, next) => {
