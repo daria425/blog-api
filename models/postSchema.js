@@ -37,7 +37,7 @@ const postSchema = new Schema(
     ],
     image_sources: [
       {
-        publicId: { type: String },
+        public_id: { type: String },
         url: {
           type: String,
         },

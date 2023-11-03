@@ -2,12 +2,10 @@ const Post = require("../models/postSchema");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const Category = require("../models/categorySchema");
-const fs = require("fs");
-const path = require("path");
 const storage = multer.diskStorage({});
 const upload = multer({ storage: storage });
 const {
-  uploadToClodinary,
+  uploadToCloudinary,
   removeFromCloudinary,
 } = require("../services/cloudinary");
 
@@ -50,19 +48,11 @@ const update_post = [
       const uploads = [];
       for (const file of req.files) {
         const path = file.path;
-        const imageData = await uploadToClodinary(path, "post-images");
-        uploads.push({ publicId: imageData.publicId, url: imageData.url });
+        const imageData = await uploadToCloudinary(path, "post-images");
+        uploads.push({ public_id: imageData.public_id, url: imageData.url });
       }
       const imageSources =
         uploads.length > 0 ? [...uploads] : prevItem.image_sources;
-      // const imageSources =
-      //   req.files.length > 0
-      //     ? req.files.map((file) => ({
-      //         data: fs.readFileSync(path.join("../uploads/" + file.filename)),
-      //         contentType: "image/jpg",
-      //       }))
-      //     : prevItem.image_sources;
-      //)
       const updatedPost = new Post({
         _id: req.params.id,
         title: req.body.title,
@@ -73,9 +63,15 @@ const update_post = [
         tags: tags,
         is_published: req.body.is_published,
       });
-      await Post.findByIdAndUpdate(req.params.id, updatedPost, {}).exec();
+      const savedAndUpdatedPost = await Post.findByIdAndUpdate(
+        req.params.id,
+        updatedPost,
+        { new: true }
+      )
+        .populate("category")
+        .exec();
       console.log("post updated");
-      res.sendStatus(200);
+      res.status(200).send(savedAndUpdatedPost);
     } catch (err) {
       console.log(err);
       res.send(`Update Error: ${err.message}`);
@@ -154,7 +150,7 @@ const delete_image_from_post = [
   verifyToken,
   async (req, res, next) => {
     try {
-      console.log(req.body.image_to_delete);
+      console.log(req.body);
       const selectedImage = await Post.updateOne(
         { _id: req.params.id },
         { $pull: { image_sources: { _id: req.body.image_to_delete } } }
