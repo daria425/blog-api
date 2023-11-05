@@ -104,7 +104,7 @@ const delete_post = [
 ];
 const new_post = [
   verifyToken,
-  upload.any("images"),
+  upload.any(),
   async (req, res, next) => {
     try {
       const imageSources = [];
@@ -112,9 +112,10 @@ const new_post = [
       if (typeof req.files !== "undefined") {
         for (const file of req.files) {
           const path = file.path;
-          const imageData = await uploadToClodinary(path, "post-images");
+          const imageData = await uploadToCloudinary(path, "post-images");
+          console.log(imageData);
           imageSources.push({
-            publicId: imageData.publicId,
+            public_id: imageData.public_id,
             url: imageData.url,
           });
         }
@@ -137,8 +138,9 @@ const new_post = [
         { _id: req.body.category },
         { $push: { posts: savedPost._id } }
       );
+      const populatedPost = await savedPost.populate("category");
 
-      res.status(200).send(savedPost);
+      res.status(200).send(populatedPost);
     } catch (err) {
       console.log(err);
       res.status(500).send(`Error: ${err.message}`);
