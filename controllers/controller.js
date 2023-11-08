@@ -10,7 +10,7 @@ const categoryRoutes = require("../routes/category");
 const commentRoutes = require("../routes/comment");
 const refreshRoutes = require("../routes/refresh");
 const noVerifyRoutes = require("../routes/noverify");
-const gptRoute = require("../services/open-ai");
+const gptRoute = require("../routes/gptchat");
 router.get("/", indexRoutes.index_get);
 router.get("/access", accessRoutes.get_access);
 
@@ -35,5 +35,5 @@ router.post("/api/signup", signUpRoutes.signup_post);
 
 router.post("/api/login", loginRoutes.login_api_post);
 router.get("/api/logout", logoutRoutes.log_out_get);
-router.get("/api/gpt", gptRoute.callGPT);
+router.get("/api/gpt/content-ideas", gptRoute.content_ideas_post);
 module.exports = router;
