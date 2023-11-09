@@ -35,5 +35,5 @@ router.post("/api/signup", signUpRoutes.signup_post);
 
 router.post("/api/login", loginRoutes.login_api_post);
 router.get("/api/logout", logoutRoutes.log_out_get);
-router.get("/api/gpt/content-ideas", gptRoute.content_ideas_post);
+router.post("/api/gpt/content-ideas", gptRoute.content_ideas_post);
 module.exports = router;

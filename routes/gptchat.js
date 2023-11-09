@@ -2,7 +2,8 @@ const chat = require("../services/open-ai");
 
 const content_ideas_post = async (req, res, next) => {
   try {
-    const stringInput = req.body.theme.join();
+    console.log(req.body);
+    const stringInput = req.body.theme;
     const gptResponse = await chat.callGPT(stringInput);
     res.status(200).send(gptResponse);
   } catch (err) {
