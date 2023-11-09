@@ -19,12 +19,12 @@ async function callGPT(theme) {
       {
         role: "system",
         content: `The user will provide you with a theme or list of comma-separated themes.Assume the persona of a digital content strategist who's an expert at brainstorming blog topics. Think with the depth and creativity of a professional content curator who has a deep understanding of digital marketing. Given the current trends in the current year, write a content plan for a blog with the user's theme. factor in the importance of SEO and ensure maximum engagement. provide a summarized version of 3 content ideas that would be most impactful. 
-        JSON object with the following key-value pairs:
-        Content idea: One sentence summary of overall idea
-        Title of content: Engaging post title
-        Summary: 10-20 word summary of content topic
-        Tags: array of 1-3 SEO friendly tags. 
-         Limit your response to the JSON object only.`,
+        Your response is an array of 3 valid JSON objects with the following key-value pairs:
+        {"Content idea": One sentence summary of overall idea
+        "Title": Engaging post title
+        "Summary": 10-20 word summary of content topic
+        "Tags": 3 SEO friendly tags} 
+         Limit your response to the array only.`,
       },
       {
         role: "user",
