@@ -9,7 +9,7 @@ async function callGPT(theme) {
     response_format: {
       type: "json_object",
     },
-    temperature: 1,
+    temperature: 0.75,
     max_tokens: 256,
     top_p: 1,
     frequency_penalty: 0,
@@ -18,18 +18,18 @@ async function callGPT(theme) {
     messages: [
       {
         role: "system",
-        content: `You are a digital content strategist who's an expert at brainstorming blog topics. You have a deep understanding of digital marketing.`,
+        content: `You are a machine that only returns and replies with valid, iterable RFC8259 compliant JSON in your responses
+      `,
       },
       {
         role: "user",
-        content: `Given the current trends in the current year, write a content plan for a blog with a theme of ${theme}. factor in the importance of SEO and ensure maximum engagement. provide a list of 3 content ideas that would be most impactful.
-        Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.
+        content: `Given the current trends in the current year, write a content plan for a blog with a theme of ${theme}. factor in the importance of SEO and ensure maximum engagement. provide an array  of 3 content ideas that would be most impactful in a JSON array format.
+        Do not include any explanations, only provide a  RFC8259 compliant JSON response  following this format without deviation.   
         [{ "content_idea": "one sentence summary of overall idea",
-                "title": "engaging post title"
-                "summary": "10-20 word summary of content topic"
+                "title": "engaging post title",
+                "summary": "10-20 word summary of content topic",
                 "tags": "3 SEO friendly tags"}]
-                 Limit your response to the array only.
-    `,
+               `,
       },
     ],
     model: "gpt-3.5-turbo-1106",
