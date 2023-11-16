@@ -12,6 +12,18 @@ const content_ideas_post = async (req, res, next) => {
   }
 };
 
+const keyword_strategy_post = async (req, res, next) => {
+  try {
+    console.log(req.body);
+    const stringInput = req.body.theme;
+    const gptResponse = await chat.gptKeywordStrategy(stringInput);
+    res.status(200).send(gptResponse);
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err);
+  }
+};
 module.exports = {
   content_ideas_post,
+  keyword_strategy_post,
 };
