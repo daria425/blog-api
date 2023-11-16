@@ -53,7 +53,7 @@ async function gptKeywordStrategy(theme) {
       },
       {
         role: "user",
-        content: `Generate a diverse and targeted list of 20 highly effective SEO keywords for a blog about ${theme}. Utilize proven keyword research tools and techniques to identify relevant keywords with high search volumes and low competition. Craft a keyword list that covers primary keywords, long-tail keywords and keyword questions to optimize website content and drive organic traffic.The list must have a length of 20 items`,
+        content: `Generate a diverse and targeted list of 20 highly effective SEO keywords for a blog about ${theme}. Utilize proven keyword research tools and techniques to identify relevant keywords with high search volumes and low competition. Craft a keyword list that covers primary keywords, long-tail keywords and keyword questions to optimize website content and drive organic traffic.The list must have a length of 20 items. Print the list on a new line and indent it. Limit your response to the list of keywords only.`,
       },
     ],
     model: "gpt-3.5-turbo-1106",
