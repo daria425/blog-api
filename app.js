@@ -16,7 +16,7 @@ const limiter = RateLimit({
 });
 const corsOptions = {
   credentials: true,
-  origin: ["http://localhost:5173"],
+  origin: ["http://localhost:5173", "https://dapper-horse-7e795d.netlify.app"],
 };
 const mongoose = require("mongoose");
 mongoose.set("strictQuery", false);
