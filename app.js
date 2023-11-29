@@ -19,6 +19,7 @@ const corsOptions = {
   origin: [
     "http://localhost:5173",
     "https://main--dapper-horse-7e795d.netlify.app",
+    "https://dapper-horse-7e795d.netlify.app/",
   ],
 };
 const mongoose = require("mongoose");
